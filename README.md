@@ -44,7 +44,7 @@ frexta-backend/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/frexta-backend.git
+git clone https://github.com/elizabeth-7664/frexta-backend.git
 cd frexta-backend
 
 2. Create a Virtual Environment & Install Dependencies
