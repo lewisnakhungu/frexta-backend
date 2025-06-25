@@ -1,22 +1,32 @@
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
-class NoteCreate(BaseModel):
-    amount : int
-    date_paid: datetime
-    notes: str
+class PaymentBase(BaseModel):
+    amount: float
+    date_paid: date
+    notes: Optional[str] = None
+    """
+    Base schema for payment with required amount and date_paid, optional notes.
+    """
 
-class NoteUpdate(BaseModel):
-    amount : Optional[str]= None
-    date_paid:Optional[datetime]= None
-    notes:Optional[str] = None
+class PaymentCreate(PaymentBase):
+    project_id: int
+    """
+    Schema for creating a payment, includes project_id to associate with a project.
+    """
 
-class NoteRead(BaseModel):
+class Payment(PaymentBase):
     id: int
-    amount: int
-    date_paid : datetime
-    notes: str
+    project_id: int
+    created_at: datetime
+    updated_at: datetime
+    """
+    Schema for payment response, includes database fields (id, project_id, timestamps).
+    """
 
     class Config:
         orm_mode = True
+        """
+        Enables Pydantic to convert SQLAlchemy ORM objects to JSON.
+        """
