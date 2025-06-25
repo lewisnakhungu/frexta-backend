@@ -5,7 +5,7 @@ from ..core.security import get_current_user
 from ..models.user import User
 from ..schemas.user import User as UserSchema
 
-router = APIRouter(prefix="/api", tags=["users"])
+router = APIRouter(tags=["users"])
 """
 Router for user-related endpoints, prefixed with /api.
 """

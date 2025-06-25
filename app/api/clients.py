@@ -7,7 +7,7 @@ from ..models.user import User
 from ..schemas.client import ClientCreate, Client as ClientSchema
 from typing import List
 
-router = APIRouter(prefix="/api", tags=["clients"])
+router = APIRouter(tags=["clients"])
 """
 Router for client-related CRUD operations, prefixed with /api.
 """

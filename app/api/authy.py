@@ -11,7 +11,7 @@ from app.schemas.user import UserCreate
 from app.models.user import User
 from pydantic import EmailStr
 
-router = APIRouter(prefix="/api", tags=["authentication"])
+router = APIRouter(tags=["authentication"])
 
 @router.post("/register")
 async def register(user: UserCreate, db: Session = Depends(get_db)):

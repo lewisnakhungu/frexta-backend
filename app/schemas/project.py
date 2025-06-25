@@ -8,7 +8,10 @@ class ProjectStatus(str, Enum):
     ACTIVE = "Active"
     COMPLETED = "Completed"
     """
-    Enum for project status, restricts values to Pending, Active, Completed.
+    Enum for project status. Allowed values:
+    - Pending
+    - Active
+    - Completed
     """
 
 class ProjectBase(BaseModel):
@@ -16,13 +19,33 @@ class ProjectBase(BaseModel):
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.PENDING
     """
-    Base schema for project with required name, optional description, and default status.
+    Base schema for project with:
+    - name (required)
+    - description (optional)
+    - status (optional, defaults to 'Pending')
     """
 
 class ProjectCreate(ProjectBase):
     client_id: int
     """
-    Schema for creating a project, includes client_id to associate with a client.
+    Schema for creating a project.
+    Requires:
+    - all fields from ProjectBase
+    - client_id (int): ID of the client the project is associated with
+    """
+
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[ProjectStatus] = None
+    client_id: Optional[int] = None
+    """
+    Schema for updating a project.
+    All fields are optional for partial updates:
+    - name
+    - description
+    - status
+    - client_id
     """
 
 class Project(ProjectBase):
@@ -31,11 +54,17 @@ class Project(ProjectBase):
     created_at: datetime
     updated_at: datetime
     """
-    Schema for project response, includes database fields (id, client_id, timestamps).
+    Schema for returning a project from the API.
+    Includes:
+    - all fields from ProjectBase
+    - id (project ID)
+    - client_id
+    - created_at
+    - updated_at
     """
 
     class Config:
         orm_mode = True
         """
-        Enables Pydantic to convert SQLAlchemy ORM objects to JSON.
+        Enable compatibility with SQLAlchemy ORM objects.
         """

@@ -9,7 +9,7 @@ from ..models.project import Project
 from ..schemas.payment import PaymentCreate, Payment as PaymentSchema
 from typing import List
 
-router = APIRouter(prefix="/api", tags=["payments"])
+router = APIRouter(tags=["payments"])
 """
 Router for payment-related CRUD operations, prefixed with /api.
 """
@@ -118,3 +118,4 @@ async def read_project_payments(project_id: int, db: Session = Depends(get_db), 
     if not project:
         raise HTTPException(status_code=404, detail="Project not found or not owned by user")
     return db.query(Payment).filter(Payment.project_id == project_id).all()
+
