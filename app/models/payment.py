@@ -5,6 +5,7 @@ from datetime import datetime
 
 class Payment(Base):
     __tablename__ = "payments"
+
     id = Column(Integer, primary_key=True, index=True)
     amount = Column(Float, nullable=False)
     date_paid = Column(Date, nullable=False)
@@ -12,4 +13,6 @@ class Payment(Base):
     notes = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
     project = relationship("Project", back_populates="payments")

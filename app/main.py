@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import auth, users, clients, projects, payments, notes
 from app.core.database import Base, engine
+from fastapi.responses import RedirectResponse
 
 app = FastAPI(
     title="ClientConnect",
@@ -30,3 +31,8 @@ app.include_router(clients)
 app.include_router(projects)
 app.include_router(payments)
 app.include_router(notes)
+
+#doc 
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
