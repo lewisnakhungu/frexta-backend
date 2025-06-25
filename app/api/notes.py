@@ -9,7 +9,7 @@ from ..models.project import Project
 from ..schemas.note import NoteCreate, Note as NoteSchema
 from typing import List
 
-router = APIRouter(prefix="/api", tags=["notes"])
+router = APIRouter(tags=["notes"])
 """
 Router for note-related CRUD operations, prefixed with /api.
 """
