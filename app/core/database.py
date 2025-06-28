@@ -6,7 +6,7 @@ DATABASE_URL = settings.DATABASE_URL
 
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,  # Optional: turn off in prod
+    echo=False,  # Optional: turn off in prod
 )
 
 AsyncSessionLocal = sessionmaker(
