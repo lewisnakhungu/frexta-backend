@@ -1,237 +1,217 @@
 # ClientConnect API
 
-ClientConnect is a FastAPI-based backend for managing clients, projects, payments, and notes, with JWT authentication. It uses PostgreSQL for data storage and Alembic for database migrations.
+**ClientConnect** is an async FastAPI backend designed to manage clients, projects, payments, notes, and dashboard analytics. It uses JWT-based authentication, PostgreSQL for data persistence, and Alembic for migrations.
 
-## Features
+## 🚀 Features
 
-* RESTful API for authentication, users, clients, projects, payments, and notes.
-* JWT-based authentication with password hashing.
-* PostgreSQL database with Alembic migrations.
-* Pydantic V2 for data validation.
-* Scalable project structure.
+* ✅ JWT authentication (register/login/reset password)
+* ✅ PostgreSQL with SQLAlchemy ORM (async)
+* ✅ Dashboard analytics (KPIs and activity feed)
+* ✅ Modular route structure (clients, projects, payments, notes)
+* ✅ Pydantic v2 schemas and validation
+* ✅ CORS support for frontend integration (React)
+* ✅ Fully async, scalable, and production-ready
 
-## Tech Stack
+## 🧰 Tech Stack
 
-* **Backend:** FastAPI, Python 3.8.13
-* **Database:** PostgreSQL 16.9
-* **ORM:** SQLAlchemy
-* **Migrations:** Alembic
-* **Authentication:** python-jose, passlib (bcrypt)
-* **Validation:** pydantic-settings
+| Category   | Tech Stack                          |
+| ---------- | ----------------------------------- |
+| Backend    | FastAPI                             |
+| Database   | PostgreSQL 16.9                     |
+| ORM        | SQLAlchemy (async)                  |
+| Migrations | Alembic                             |
+| Auth       | JWT (python-jose), bcrypt (passlib) |
+| Validation | Pydantic Settings                   |
+| Server     | Uvicorn                             |
 
-## Prerequisites
+---
 
-* Python 3.8.13
+## 🖥️ Prerequisites
+
+* Python 3.10+
 * PostgreSQL 16.9
-* pip
-* Virtualenv
+* pip + virtualenv
 * Git
 
-## Setup Instructions
+---
 
-### 1. Clone the Repository
+## 🛠️ Setup Instructions
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/clientconnect-backend.git
 cd clientconnect-backend
 ```
 
-### 2. Set Up Virtual Environment
+### 2. Create and activate a virtual environment
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 ```
 
-### 3. Install Dependencies
+### 3. Install dependencies
 
 ```bash
-pip install fastapi uvicorn sqlalchemy alembic psycopg2-binary pydantic-settings python-jose[cryptography] passlib[bcrypt]
+pip install -r requirements.txt
 ```
 
 ### 4. Configure PostgreSQL
 
-Ensure PostgreSQL is running on port 5433:
+Ensure PostgreSQL is running on port `5433`. Update these files if needed:
 
-```bash
-sudo systemctl status postgresql
-netstat -tuln | grep 5433
-```
+* `/etc/postgresql/16/main/postgresql.conf`:
 
-Edit `/etc/postgresql/16/main/pg_hba.conf`:
+  ```
+  port = 5433
+  listen_addresses = 'localhost'
+  ```
+* `/etc/postgresql/16/main/pg_hba.conf`:
 
-```
-host    all             myuser          127.0.0.1/32            md5
-host    all             postgres        127.0.0.1/32            md5
-```
+  ```
+  host    all             all             127.0.0.1/32            md5
+  ```
 
-Edit `/etc/postgresql/16/main/postgresql.conf`:
-
-```
-port = 5433
-listen_addresses = 'localhost'
-```
-
-Restart PostgreSQL:
+Then restart:
 
 ```bash
 sudo systemctl restart postgresql
 ```
 
-Create database and user:
+### 5. Create database and user
 
 ```bash
 sudo -u postgres psql -p 5433
 ```
 
-Inside `psql` shell:
+Inside the psql shell:
 
 ```sql
 CREATE DATABASE frexta_db;
+CREATE USER myuser WITH PASSWORD 'securepassword123';
 ALTER DATABASE frexta_db OWNER TO myuser;
-ALTER USER myuser WITH PASSWORD 'securepassword123';
 GRANT ALL PRIVILEGES ON DATABASE frexta_db TO myuser;
-\connect frexta_db
-GRANT ALL ON SCHEMA public TO myuser;
 ```
 
-### 5. Configure Environment
+---
 
-Create `.env` in project root:
+### 6. Configure environment variables
 
-```bash
-nano .env
-```
-
-Add:
+Create a `.env` file in the root:
 
 ```env
-DATABASE_URL=postgresql://myuser:securepassword123@localhost:5433/frexta_db
-SECRET_KEY=$(openssl rand -hex 32)
+DATABASE_URL=postgresql+asyncpg://myuser:securepassword123@localhost:5433/frexta_db
+SECRET_KEY=your-secret-key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
-### 6. Run Migrations
+---
 
-Move `migrations/` and `alembic.ini` to project root if needed:
+### 7. Run migrations
 
-```bash
-mv app/migrations .
-mv app/alembic.ini .
-```
-
-Update `alembic.ini`:
-
-```ini
-[alembic]
-script_location = migrations
-sqlalchemy.url = postgresql://myuser:securepassword123@localhost:5433/frexta_db
-```
-
-Run migrations:
+If you haven't already:
 
 ```bash
-alembic revision --autogenerate -m "initial migration"
+alembic revision --autogenerate -m "Initial migration"
 alembic upgrade head
 ```
 
-Verify tables:
+---
+
+### 8. Start the development server
 
 ```bash
-psql -U myuser -d frexta_db -h localhost -p 5433
-\dt
-```
-
-### 7. Start the Server
-
-```bash
-cd app
 uvicorn app.main:app --reload --port 8000
 ```
 
-Access:
+---
 
-* API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* Root: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+## 🔀 API Endpoints
 
-## Project Structure
+### Auth Routes (`/api`)
+
+* `POST /api/register`
+* `POST /api/login`
+* `POST /api/forgot-password`
+* `POST /api/reset-password`
+
+### Core Resources
+
+* `GET /api/clients`
+* `GET /api/projects`
+* `GET /api/payments`
+* `GET /api/notes`
+* `GET /api/users`
+
+### Dashboard
+
+* `GET /api/dashboard/kpis`
+* `GET /api/dashboard/activities`
+
+---
+
+## 🗂️ Project Structure
 
 ```
 frexta-backend/
 ├── app/
 │   ├── api/
-│   │   ├── __init__.py
 │   │   ├── authy.py
 │   │   ├── users.py
 │   │   ├── clients.py
 │   │   ├── projects.py
 │   │   ├── payments.py
 │   │   ├── notes.py
+│   │   └── dashboard.py
 │   ├── core/
 │   │   ├── config.py
 │   │   ├── database.py
-│   │   ├── security.py
+│   │   └── security.py
 │   ├── models/
-│   │   ├── user.py
-│   │   ├── client.py
-│   │   ├── project.py
-│   │   ├── payment.py
-│   │   ├── note.py
 │   ├── schemas/
-│   │   ├── user.py
-│   │   ├── client.py
-│   │   ├── project.py
-│   │   ├── payment.py
-│   │   ├── note.py
 │   ├── main.py
-│   ├── test_db.py
 ├── migrations/
-│   ├── env.py
-│   ├── versions/
 ├── .env
 ├── alembic.ini
-├── README.md
+├── requirements.txt
 ```
 
-## API Endpoints
+---
 
-* **Auth:** `/auth/register`, `/auth/token`, `/auth/forgot-password`
-* **Users:** `/users/`
-* **Clients:** `/clients/`
-* **Projects:** `/projects/`
-* **Payments:** `/payments/`
-* **Notes:** `/notes/`
+## 🐛 Troubleshooting
 
-## Troubleshooting
-
-### ModuleNotFoundError:
+### `ModuleNotFoundError`
 
 ```bash
-pip list | grep -E 'pydantic|fastapi|jose|passlib'
+pip install -r requirements.txt
 ```
 
-### Database Issues:
+### Alembic errors
 
 ```bash
-psql -U myuser -d frexta_db -h localhost -p 5433
+alembic -x loglevel=DEBUG revision --autogenerate -m "fix migration"
+```
+
+### PostgreSQL issues
+
+```bash
 sudo tail -f /var/log/postgresql/postgresql-16-main.log
 ```
 
-### Alembic Errors:
+---
 
-```bash
-alembic -x loglevel=DEBUG revision --autogenerate -m "initial migration"
-```
+## 👥 Contributing
 
-## Contributing
+1. Fork the project
+2. Create a new branch: `git checkout -b feature/xyz`
+3. Commit changes: `git commit -m "feat: add xyz"`
+4. Push to GitHub: `git push origin feature/xyz`
+5. Create a pull request
 
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m "feat: add your feature"`
-4. Push to branch: `git push origin feature/your-feature`
-5. Submit a pull request.
+---
 
-## License
+## 📄 License
 
 MIT License
