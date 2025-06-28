@@ -29,7 +29,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Async-compatible table creation
+#  Async-compatible table creation
 @app.on_event("startup")
 async def on_startup():
     async with engine.begin() as conn:

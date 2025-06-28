@@ -4,7 +4,6 @@ from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, DateTime
 from ..core.database import Base
-from .client import Client
 
 class User(Base):
     __tablename__ = "users"
