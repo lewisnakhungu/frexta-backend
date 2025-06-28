@@ -6,9 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SqlEnum
 from ..core.database import Base
 import enum
-from .payment import Payment
-from .client import Client
-from .note import Note
+
 
 class ProjectStatus(str, enum.Enum):
     PENDING = "Pending"
