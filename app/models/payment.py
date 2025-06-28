@@ -1,18 +1,22 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from datetime import datetime, date
+from typing import Optional
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from .project import Project
 from ..core.database import Base
-from datetime import datetime
+
 
 class Payment(Base):
     __tablename__ = "payments"
 
-    id = Column(Integer, primary_key=True, index=True)
-    amount = Column(Float, nullable=False)
-    date_paid = Column(Date, nullable=False)
-    project_id = Column(Integer, ForeignKey("projects.id"))
-    notes = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    amount: Mapped[float] = mapped_column(nullable=False)
+    date_paid: Mapped[date] = mapped_column(nullable=False)
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"))
+    notes: Mapped[Optional[str]] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    project = relationship("Project", back_populates="payments")
+    project: Mapped["Project"] = relationship(back_populates="payments")

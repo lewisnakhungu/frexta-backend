@@ -1,9 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.api import auth, users, clients, projects, payments, notes
-from app.core.database import Base, engine
 from fastapi.responses import RedirectResponse
+
+from app.api.authy import router as auth_router
+from app.api.users import router as users_router
+from app.api.clients import router as clients_router
+from app.api.projects import router as projects_router
+from app.api.payments import router as payments_router
+from app.api.notes import router as notes_router
+from app.api.dashboard import router as dashboard_router
+
+from app.core.database import Base, engine
 
 app = FastAPI(
     title="ClientConnect",
@@ -12,34 +19,32 @@ app = FastAPI(
     openapi_url="/api/openapi.json"
 )
 
-# CORS settings — adjust as needed for deployment
+# CORS settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # frontend dev URL
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Create all tables
-Base.metadata.create_all(bind=engine)
+# ✅ Async-compatible table creation
+@app.on_event("startup")
+async def on_startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-# Include all routers
-# app.include_router(auth)
-# app.include_router(users)
-# app.include_router(clients)
-# app.include_router(projects)
-# app.include_router(payments)
-# app.include_router(notes)
+# Routers
+app.include_router(auth_router, prefix="/api", tags=["auth"])
+app.include_router(users_router, prefix="/api", tags=["users"])
+app.include_router(clients_router, prefix="/api", tags=["clients"])
+app.include_router(projects_router, prefix="/api", tags=["projects"])
+app.include_router(payments_router, prefix="/api", tags=["payments"])
+app.include_router(notes_router, prefix="/api", tags=["notes"])
+app.include_router(dashboard_router, prefix="/api", tags=["dashboard"])
 
-app.include_router(auth, prefix="/api", tags=["auth"])
-app.include_router(users, prefix="/api", tags=["users"])
-app.include_router(clients, prefix="/api", tags=["clients"])
-app.include_router(projects, prefix="/api", tags=["projects"])
-app.include_router(payments, prefix="/api", tags=["payments"])
-app.include_router(notes, prefix="/api", tags=["notes"])
-
-#doc 
+# Docs redirect
 @app.get("/", include_in_schema=False)
 def root():
     return RedirectResponse(url="/docs")
