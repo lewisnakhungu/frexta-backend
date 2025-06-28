@@ -2,6 +2,10 @@
 
 **ClientConnect** is an async FastAPI backend designed to manage clients, projects, payments, notes, and dashboard analytics. It uses JWT-based authentication, PostgreSQL for data persistence, and Alembic for migrations.
 
+![image](https://github.com/user-attachments/assets/9f8ae494-ac9d-4f25-9126-5c9fc03a3a3d)
+![image](https://github.com/user-attachments/assets/ef7c96bc-92a3-4118-a4e1-2e606300f754)
+
+
 ## 🚀 Features
 
 * ✅ JWT authentication (register/login/reset password)
