@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.authy import router as auth_router
 from app.api.users import router as users_router
@@ -28,6 +29,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Serve static frontend files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Redirect root to index.html
+@app.get("/", include_in_schema=False)
+async def serve_frontend():
+    return FileResponse("static/index.html")
+
 
 #  Async-compatible table creation
 @app.on_event("startup")
@@ -44,7 +53,3 @@ app.include_router(payments_router, prefix="/api", tags=["payments"])
 app.include_router(notes_router, prefix="/api", tags=["notes"])
 app.include_router(dashboard_router, prefix="/api", tags=["dashboard"])
 
-# Docs redirect
-@app.get("/", include_in_schema=False)
-def root():
-    return RedirectResponse(url="/docs")
